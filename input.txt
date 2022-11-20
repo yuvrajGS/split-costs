@@ -1,0 +1,9 @@
+chicken strip, 14.99
+bun, 7.99
+cheeze, 13.49
+muffin, 9.99
+burger, 26.98
+dump, 14.99
+milk, 5.45
+bagles, 7.99
+demfs, 6.79
