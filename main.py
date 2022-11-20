@@ -41,13 +41,13 @@ def main():
     finalCost=calCost(items)
     for i in items:
         count+=items[i][0]
-    print("Total = {}".format(count))
+    print("Total = {:.2f}".format(count))
     print("Split costs:")
-    print("Yuvraj = {}".format(finalCost[0]))
-    print("Meer = {}".format(finalCost[1]))
-    print("Thenu = {}".format(finalCost[2]))
-    print("Cynthia = {}".format(finalCost[3]))
-    print("Sarah = {}".format(finalCost[4]))
+    print("Yuvraj = {:.2f}".format(finalCost[0]))
+    print("Meer = {:.2f}".format(finalCost[1]))
+    print("Thenu = {:.2f}".format(finalCost[2]))
+    print("Cynthia = {:.2f}".format(finalCost[3]))
+    print("Sarah = {:.2f}".format(finalCost[4]))
     for i in finalCost:
         total+=i
     print(total)
