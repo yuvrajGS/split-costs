@@ -1,19 +1,25 @@
-def readInput():
+def readInput(fin):
     items = {}
-    f = open("input.txt", "r")
-    for x in f:
-        item = x.split(",")
+    itemList = fin.split("\n")
+    for itemIN in itemList:
+        item = itemIN.split(",")
         items[item[0]]= [float(item[1].strip()), "yuvraj", "meer", "thenu","cynthia","sarah"]
-    f.close()
     return items
 
-def optOut(items):
-    for name in ["yuvraj", "meer", "thenu","cynthia","sarah"]:
-        f = open(name+".txt","r")
-        for x in f:
-            item = x.strip()
+def optOut(items,yIN,mIN,tIN,cIN,sIN):
+    for f in [yIN,mIN,tIN,cIN,sIN]:
+        if id(f) == id(yIN):
+            name = "yuvraj"
+        elif id(f) == id(mIN):
+            name = "meer"
+        elif id(f) == id(tIN):
+            name = "thenu"
+        elif id(f) == id(cIN):
+            name = "cynthia"
+        elif id(f) == id(sIN):
+            name = "sarah"
+        for item in f:
             items[item].remove(name)
-        f.close()
     return
 
 def calCost(items):
@@ -32,27 +38,12 @@ def calCost(items):
 
     return finalCost
 
-def main():
-    count=0
+def main(fIN,yIN,mIN,tIN,cIN,sIN):
     total=0
-    items = readInput()
-    optOut(items)
-    calCost
+    items = readInput(fIN)
+    optOut(items,yIN,mIN,tIN,cIN,sIN)
     finalCost=calCost(items)
-    for i in items:
-        count+=items[i][0]
-    print("Total = {:.2f}".format(count))
-    print("Split costs:")
-    print("Yuvraj = {:.2f}".format(finalCost[0]))
-    print("Meer = {:.2f}".format(finalCost[1]))
-    print("Thenu = {:.2f}".format(finalCost[2]))
-    print("Cynthia = {:.2f}".format(finalCost[3]))
-    print("Sarah = {:.2f}".format(finalCost[4]))
     for i in finalCost:
         total+=i
-    print(total)
-
-        
-
-main()
-
+    
+    return finalCost, total
