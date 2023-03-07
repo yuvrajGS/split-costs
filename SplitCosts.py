@@ -1,54 +1,68 @@
-import PySimpleGUI as sg
-import main
-
-
-sg.theme('DarkAmber')
-layoutL = [
-    [sg.Text("Input Receipt Items (Ex: chicken, 5.99):")],
-    [sg.Multiline(size=(50,10),key='input')],
-    [sg.Text("Split Costs:")],
-    [sg.Multiline(size=(20,10),key='output')],
-    [sg.Button("Exit"), sg.Button("Submit Input"), sg.Button("Run")]
-]
-def formatLR(name):
-    return [
-        sg.Text(f'{name} Opt-out:'),
-        sg.Listbox(['Submit Input'],size=(20,5),key=f'input-{name}', select_mode=sg.LISTBOX_SELECT_MODE_MULTIPLE)
-    ]
-layoutR = [
-    formatLR('Yuvraj'), formatLR("Meer"), formatLR("Thenu"), formatLR("Cynthia"), formatLR("Sarah")
-]
-
-layout = [
-    [
-        sg.Column(layoutL),
-        sg.VSeperator(),
-        sg.Column(layoutR)
-    ]
-]
-window = sg.Window("Split Costs", layout)
-
-def readIN(input):
-    checkL=[]
-    itemList = input.split("\n")
+def readInput(fin):
+    items = {}
+    itemList = fin.split("\n")
     for itemIN in itemList:
         item = itemIN.split(",")
-        checkL.append(item[0])
-    return checkL
+        items[item[0]]= [float(item[1].strip()), "yuvraj", "meer", "thenu","cynthia","sarah"]
+    return items
 
-while True:
-    event, values = window.read()
-    if (event == 'Exit' or event == sg.WIN_CLOSED):
-        break
-    if (event == 'Submit Input'):
-        items = readIN(values['input'])
-        window['input-Yuvraj'].update(items)
-        window['input-Meer'].update(items)
-        window['input-Thenu'].update(items)
-        window['input-Cynthia'].update(items)
-        window['input-Sarah'].update(items)
-        window.refresh()
-    if (event == 'Run'):
-        finalCost, total = main.main(values['input'],values['input-Yuvraj'],values['input-Meer'],values['input-Thenu'],values['input-Cynthia'],values['input-Sarah'])
-        window['output'].update(f'Yuvraj: {finalCost[0]:.2f}\nMeer: {finalCost[1]:.2f}\nThenu: {finalCost[2]:.2f}\nCynthia: {finalCost[3]:.2f}\nSarah: {finalCost[4]:.2f}\nTotal: {total:.2f}')
-window.close()
+def optOut(items,yIN,mIN,tIN,cIN,sIN):
+    for f in [yIN,mIN,tIN,cIN,sIN]:
+        if id(f) == id(yIN):
+            name = "yuvraj"
+        elif id(f) == id(mIN):
+            name = "meer"
+        elif id(f) == id(tIN):
+            name = "thenu"
+        elif id(f) == id(cIN):
+            name = "cynthia"
+        elif id(f) == id(sIN):
+            name = "sarah"
+        for item in f:
+            items[item].remove(name)
+    return
+
+def calCost(items):
+    names = {"yuvraj": 0, "meer": 1, "thenu": 2,"cynthia":3,"sarah":4}
+    finalCost=[0]*5
+    for item in items:
+        if (len(items[item]) == 6):
+            for i in range(5):
+                finalCost[i]+=(items[item][0])/5
+        elif (len(items[item]) == 1):
+            print("ERROR: Everyone opted out")
+            break
+        else:
+            for i in range(1,len(items[item])):
+                finalCost[names[items[item][i]]]+=(items[item][0]/(len(items[item])-1))
+
+    return finalCost
+
+def optIN(items):
+    outputY = ''
+    outputM = ''
+    outputT = ''
+    outputC = ''
+    outputS = ''
+    for item in items:
+        if(items[item].count("yuvraj") != 0):
+            outputY += item + "\n"
+        if(items[item].count("meer") != 0):
+            outputM += item + "\n"
+        if(items[item].count("thenu") != 0):
+            outputT += item + "\n"
+        if(items[item].count("cynthia") != 0):
+            outputC += item + "\n"
+        if(items[item].count("sarah") != 0):
+            outputS += item + "\n"
+    return ("\n\n**Yuvraj:**\n`" + outputY + "`\n**Meer:**\n`" + outputM + "`\n**Thenu:**\n`" + outputT + "`\n**Cynthia:**\n`" + outputC + "`\n**Sarah:**\n`" + outputS + "`")
+
+def run(fIN,yIN,mIN,tIN,cIN,sIN):
+    total=0
+    items = readInput(fIN)
+    optOut(items,yIN,mIN,tIN,cIN,sIN)
+    finalCost=calCost(items)
+    for i in finalCost:
+        total+=i
+    
+    return finalCost, total, optIN(items)
